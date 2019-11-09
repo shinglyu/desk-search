@@ -6,9 +6,22 @@
     <title>餐會桌號查詢</title>
   </head>
   <body>
+    <main>
+      <form onsubmit="return handleSubmit(event)">
+        <h2>請輸入您的票號：</h2>
+        <input id='ticketId' type='number' min='1' max='1000' name='ticketId' placeholder='票號' />
+        <button>查詢</button>
+      </form>
+
+      <h2>您的桌號為：</h2>
+      <h1 id='show-result'></h1>
+    </main>
+
+
     <script charset="utf-8">
+      let matrix = []
+      
       function parse(entries) { // input: the data.entry from the google spreadsheet response
-        let matrix = []
         for (const entry of entries) {
            const row = entry.gs$cell.row - 1 // Row starts at 1 
            const col = entry.gs$cell.col - 1 // Col starts at 1 
@@ -28,6 +41,23 @@
           console.log(data)
           console.log(parse(data.feed.entry))
         })
+
+      let deskId = null
+
+      function handleSubmit(event){
+        event.preventDefault() 
+        let ticketId = document.getElementById('ticketId').value
+        console.log('tecketID', ticketId)
+        const found = matrix.find(function(element){
+                    return element[0] == ticketId
+                  })
+        console.log('found',found)
+        deskId = found[1]
+        console.log('deskId', deskId)
+        document.getElementById('show-result').innerText=deskId
+        
+      }
+
     </script>
   </body>
 </html>
