@@ -10,7 +10,7 @@
       <form onsubmit="return handleSubmit(event)">
         <h2>請輸入您的票號：</h2>
         <input id='ticketId' type='number' min='1' max='1000' name='ticketId' placeholder='票號' />
-        <button>查詢</button>
+        <button id='btn'  disabled>載入中</button>
       </form>
 
       <h2>您的桌號為：</h2>
@@ -40,6 +40,8 @@
         .then(data => {
           console.log(data)
           console.log(parse(data.feed.entry))
+          document.getElementById('btn').innerText='查詢'
+          document.getElementById('btn').disabled=false
         })
 
       let deskId = null
