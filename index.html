@@ -68,7 +68,7 @@
         event.preventDefault()
         let ticketId = document.getElementById('ticketId').value
         const found = sheetData.find(function(element){
-                    return element[0] == ticketId
+                    return parseInt(element[0]) == parseInt(ticketId)
                   })
         let deskId = null
         if(!found || !found[1]){
