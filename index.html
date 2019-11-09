@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>餐會桌號查詢</title>
+  </head>
+  <body>
+    <script charset="utf-8">
+      function parse(entries) { // input: the data.entry from the google spreadsheet response
+        let matrix = []
+        for (const entry of entries) {
+           const row = entry.gs$cell.row - 1 // Row starts at 1 
+           const col = entry.gs$cell.col - 1 // Col starts at 1 
+           const value = entry.gs$cell.inputValue
+           if (!matrix[row]) {
+             matrix[row] = []
+           }
+           matrix[row][col] = value
+        }
+        return matrix
+      }
+
+      const url = "https://spreadsheets.google.com/feeds/cells/1hBVlw66Z71xaIN536PjwROu44dfAKe2l6wKXD2jafog/1/public/full?alt=json"
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          console.log(parse(data.feed.entry))
+        })
+    </script>
+  </body>
+</html>
