@@ -9,10 +9,9 @@
         font-size: 1.5em;
         font-family: Arial, Helvetica, sans-serif;
       }
-      h2, h1{
+      h1, h2{
         text-align: center;
       }
-      
       form{
         text-align: center;
       }
@@ -23,7 +22,6 @@
       button{
         font-size: 1.5em;
       }
-
     </style>
   </head>
   <body>
@@ -35,22 +33,18 @@
               <button id='btn'  disabled>載入中</button>
             </form>
       </div>
-      
       <div>
           <h2>您的桌號為：</h2>
           <h1 id='show-result'></h1>
       </div>
-     
     </main>
 
-
     <script charset="utf-8">
-      let matrix = []
-      
-      function parse(entries) { // input: the data.entry from the google spreadsheet response
+      function parse(entries) { // input: the data.feed.entry from the google spreadsheet response
+        let matrix = []
         for (const entry of entries) {
-           const row = entry.gs$cell.row - 1 // Row starts at 1 
-           const col = entry.gs$cell.col - 1 // Col starts at 1 
+           const row = entry.gs$cell.row - 1 // Row starts at 1
+           const col = entry.gs$cell.col - 1 // Col starts at 1
            const value = entry.gs$cell.inputValue
            if (!matrix[row]) {
              matrix[row] = []
@@ -61,36 +55,30 @@
       }
 
       const url = "https://spreadsheets.google.com/feeds/cells/1hBVlw66Z71xaIN536PjwROu44dfAKe2l6wKXD2jafog/1/public/full?alt=json"
+      let sheetData = [];
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          console.log(data)
-          console.log(parse(data.feed.entry))
           document.getElementById('btn').innerText='查詢'
           document.getElementById('btn').disabled=false
+          sheetData = parse(data.feed.entry)
         })
 
-      let deskId = null
-
       function handleSubmit(event){
-        event.preventDefault() 
+        event.preventDefault()
         let ticketId = document.getElementById('ticketId').value
-        console.log('tecketID', ticketId)
-        const found = matrix.find(function(element){
+        const found = sheetData.find(function(element){
                     return element[0] == ticketId
                   })
-        console.log('found',found)
+        let deskId = null
         if(!found || !found[1]){
           deskId = '請聯繫工作人員'
         }else{
           deskId = `${found[1]}桌`
         }
-        
-        console.log('deskId', deskId)
         document.getElementById('show-result').innerText=deskId
-        
+        return false
       }
-
     </script>
   </body>
 </html>
