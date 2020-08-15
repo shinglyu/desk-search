@@ -9,7 +9,7 @@
         font-size: 1.5em;
         font-family: Arial, Helvetica, sans-serif;
       }
-      h1, h2{
+      h1, h2, div{
         text-align: center;
       }
       form{
@@ -22,21 +22,36 @@
       button{
         font-size: 1.5em;
       }
+      table {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1.5em;
+      }
     </style>
   </head>
   <body>
     <main>
       <div>
-          <form onsubmit="return handleSubmit(event)">
+          <form onsubmit="return handleSearchByTicketNo(event)">
               <h2>請輸入您的票號：</h2>
               <input id='ticketId' type='number' min='1' max='1000' name='ticketId' placeholder='票號' />
-              <button id='btn'  disabled>載入中</button>
-            </form>
+              <button id='searchByTicketNo'  disabled>載入中</button>
+          </form>
       </div>
       <div>
           <h2>您的桌號為：</h2>
           <h1 id='show-result'></h1>
       </div>
+      <hr/>
+      <div>
+          <form onsubmit="return handleSearchByName(event)">
+              <h2>不知道票號? 請輸入您的姓名：</h2>
+              <input id='name' type='text' name='name' placeholder='姓名(例:李、王小明)' />
+              <button id='searchByName' disabled>載入中</button>
+          </form>
+      </div>
+      <div id="name-result"></div>
+
     </main>
 
     <script charset="utf-8">
@@ -59,12 +74,14 @@
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          document.getElementById('btn').innerText='查詢'
-          document.getElementById('btn').disabled=false
+          document.getElementById('searchByTicketNo').innerText='查詢'
+          document.getElementById('searchByTicketNo').disabled=false
+          document.getElementById('searchByName').innerText='查詢'
+          document.getElementById('searchByName').disabled=false
           sheetData = parse(data.feed.entry)
         })
 
-      function handleSubmit(event){
+      function handleSearchByTicketNo(event){
         event.preventDefault()
         let ticketId = document.getElementById('ticketId').value
         const found = sheetData.find(function(element){
@@ -77,6 +94,32 @@
           deskId = `${found[1]}桌`
         }
         document.getElementById('show-result').innerText=deskId
+        return false
+      }
+
+      function handleSearchByName(event){
+        document.getElementById('name-result').innerHTML = ""
+        event.preventDefault()
+        let nameQuery = document.getElementById('name').value
+        const found = sheetData.filter(function(element){
+                    return element[2] && element[2].includes(nameQuery.trim())
+                  })
+        let nameSearchResult = document.createElement('div')
+        if(found.length === 0){
+          nameSearchResult.innerText = '查無資料。請聯繫工作人員'
+        }else{
+          var table = document.createElement('table')
+          for (const person of found) {
+            const row = table.insertRow(0)
+            const cellName = row.insertCell(0)
+            cellName.innerText = person[2]
+            const cellTableId= row.insertCell(1)
+            cellTableId.innerText = `${person[1]} 桌`
+          }
+
+          nameSearchResult.appendChild(table)
+        }
+        document.getElementById('name-result').appendChild(nameSearchResult)
         return false
       }
     </script>
