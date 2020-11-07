@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>餐會桌號查詢</title>
     <style>
       body{
@@ -18,6 +18,7 @@
       input{
         font-size: 1.5em;
         height: 52px;
+        max-width: 90vw;
       }
       button{
         font-size: 1.5em;
@@ -26,6 +27,9 @@
         margin-left: auto;
         margin-right: auto;
         font-size: 1.5em;
+      }
+      #spacer, #name-result {
+        height: 60vh;
       }
     </style>
   </head>
@@ -37,24 +41,19 @@
               <input id='ticketId' type='number' min='1' max='1000' name='ticketId' placeholder='票號' />
               <button id='searchByTicketNo'  disabled>載入中</button>
           </form>
+          <a href="#nameForm">不知道票號?</a>
       </div>
       <div>
           <h2>您的桌號為：</h2>
           <h1 id='show-result'></h1>
       </div>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+      <div id="spacer"></div>
       <hr/>
       <div>
-          <form onsubmit="return handleSearchByName(event)">
-              <h2>不知道票號? 請輸入您的姓名：</h2>
-              <input id='name' type='text' name='name' placeholder='姓名(例:李、王小明)' />
+          <form id="nameForm" onsubmit="return handleSearchByName(event)">
+            <h2>
+              請輸入您的姓名：</h2>
+              <input id='name' type='text' name='name' placeholder='姓名'/>
               <button id='searchByName' disabled>載入中</button>
           </form>
       </div>
