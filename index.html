@@ -62,21 +62,20 @@
     </main>
 
     <script charset="utf-8">
-      function parse(entries) { // input: the data.feed.entry from the google spreadsheet response
+      function parse(values) { // input: the data.feed.entry from the google spreadsheet response
+        console.log(values)
         let matrix = []
-        for (const entry of entries) {
-           const row = entry.gs$cell.row - 1 // Row starts at 1
-           const col = entry.gs$cell.col - 1 // Col starts at 1
-           const value = entry.gs$cell.inputValue
-           if (!matrix[row]) {
-             matrix[row] = []
+        for (const [rowIndex, row] of values.entries()) {
+           if (!matrix[rowIndex]) {
+             matrix[rowIndex] = []
            }
-           matrix[row][col] = value
+           for (const [colIndex, cell] of row.entries())
+           matrix[rowIndex][colIndex] =cell 
         }
         return matrix
       }
 
-      const url = "https://spreadsheets.google.com/feeds/cells/1hBVlw66Z71xaIN536PjwROu44dfAKe2l6wKXD2jafog/1/public/full?alt=json"
+      const url = "https://sheets.googleapis.com/v4/spreadsheets/1hBVlw66Z71xaIN536PjwROu44dfAKe2l6wKXD2jafog/values/Sheet1!A1:C999?key=AIzaSyD_rDvED5iMZpFOYAv5bwFzgYSFAL9yHHw"
       let sheetData = [];
       fetch(url)
         .then(response => response.json())
@@ -85,7 +84,7 @@
           document.getElementById('searchByTicketNo').disabled=false
           document.getElementById('searchByName').innerText='查詢'
           document.getElementById('searchByName').disabled=false
-          sheetData = parse(data.feed.entry)
+          sheetData = parse(data.values)
         })
 
       function handleSearchByTicketNo(event){
