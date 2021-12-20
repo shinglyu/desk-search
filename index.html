@@ -108,7 +108,7 @@
         event.preventDefault()
         let nameQuery = document.getElementById('name').value
         const found = sheetData.filter(function(element){
-                    return element[2] && element[2].includes(nameQuery.trim())
+                    return element[2] && element[2].toLowerCase().includes(nameQuery.trim().toLowerCase())
                   })
         let nameSearchResult = document.createElement('div')
         if(found.length === 0){
