@@ -63,7 +63,6 @@
 
     <script charset="utf-8">
       function parse(values) { // input: the data.feed.entry from the google spreadsheet response
-        console.log(values)
         let matrix = []
         for (const [rowIndex, row] of values.entries()) {
            if (!matrix[rowIndex]) {
