@@ -103,12 +103,23 @@
         return false
       }
 
+      function convertFullwidthEnglishToHalfwidth(fullwidthString) {
+        return fullwidthString.replace(
+          /[\uff01-\uff5e]/g,
+          function(ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xfee0); }
+        );
+      }
+
+      function cleanEnglish(englishString) {
+        return convertFullwidthEnglishToHalfwidth(englishString.trim()).toLowerCase()
+      }
+
       function handleSearchByName(event){
         document.getElementById('name-result').innerHTML = ""
         event.preventDefault()
-        let nameQuery = document.getElementById('name').value
+        let nameQuery = cleanEnglish(document.getElementById('name').value)
         const found = sheetData.filter(function(element){
-                    return element[2] && element[2].toLowerCase().includes(nameQuery.trim().toLowerCase())
+                    return element[2] && cleanEnglish(element[2]).includes(nameQuery)
                   })
         let nameSearchResult = document.createElement('div')
         if(found.length === 0){
